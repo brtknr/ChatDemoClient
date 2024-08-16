@@ -1,0 +1,17 @@
+<div style="background-color: darkseagreen;">
+    <input type="text" #txtInput>
+    <hr>
+    <input type="text" #connIdInput>
+    <button (click)="sendMessage(txtInput,connIdInput)">send message</button>
+    <p>{{ inputText }}</p>
+    <hr>
+    <div style="background-color: blueviolet;">
+        <ul>
+            <h4 style="text-decoration: underline;">Kullanıcı Listesi</h4>
+            <li *ngFor="let el of clientlist">{{ el }}</li>
+        </ul>
+    </div>
+    <hr>
+    <p style="background-color: lightgreen;" *ngIf="userJoined">{{userJoined}} katıldı.</p>
+    <p style="background-color: darkred;" *ngIf="userLeft">{{userLeft}} ayrıldı.</p>
+</div>
