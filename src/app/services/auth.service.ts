@@ -4,33 +4,34 @@ import { inject, Injectable } from '@angular/core';
 import { NgForm } from '@angular/forms';
 import { UserSignup } from '../models/UserSignup';
 import { appSettings } from '../consts';
-import { Observable, of } from 'rxjs';
+import { firstValueFrom, Observable, of } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
-  private _httpClient = inject(HttpClient);
 
-  constructor() { }
+  private _httpClient : HttpClient;
 
-  private auth = false;
+  constructor() {
+    this._httpClient  = inject(HttpClient);
+   }
+
+  private auth = true;
 
   authenticated(){
     return this.auth;
   }
 
   async login(userVM:UserSignup) {
-    this._httpClient.post(`${appSettings.USER_BASE_URL}/Login`,userVM).subscribe({
-      next(value) 
-      {
-        console.log(value);
-      },
-      error(err) {
-        console.log(err);
-      },
-    
-    });
+
+    var auth2 = false;
+
+    await firstValueFrom(this._httpClient.post(`${appSettings.USER_BASE_URL}/Login`,userVM))
+                .then((value) => auth2 = true)
+                .catch((err) =>console.log(err));
+
+    return auth2;            
   }
 
 }

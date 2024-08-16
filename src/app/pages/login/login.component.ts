@@ -14,9 +14,15 @@ import { Router } from '@angular/router';
 
 export class LoginComponent {
 
-  private _authService = inject(AuthService);
+  //_authService = inject(AuthService);
+  //_router = inject(Router);
 
   @ViewChild('LoginForm') form: NgForm;
+
+  constructor(private _router : Router,private _authService : AuthService) {
+
+  }
+
 
   async login(userLoginForm:NgForm){
 
@@ -24,17 +30,16 @@ export class LoginComponent {
       Email : userLoginForm.value["Email"],
       Password : userLoginForm.value["Password"]}
 
-    await this._authService.login(userVM);
+    var succeeded : boolean;
 
-    console.log(this._authService.authenticated());
-    
+    await this._authService.login(userVM).then((response) => succeeded = response);
 
-    this._authService.authenticated() ? inject(Router).createUrlTree(['/']) : 
-                                          this.form.form.patchValue({
-                                            UserName: userVM.UserName,
-                                            Email: userVM.Email,
-                                            Password: userVM.Password,
-                                          }) 
+    succeeded ? this._router.navigate([""]) : 
+                        this.form.form.patchValue({
+                        UserName: userVM.UserName,
+                        Email: userVM.Email,
+                        Password: userVM.Password,
+                        }) 
   }
 
 }
