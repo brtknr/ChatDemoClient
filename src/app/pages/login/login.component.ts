@@ -14,9 +14,6 @@ import { Router } from '@angular/router';
 
 export class LoginComponent {
 
-  //_authService = inject(AuthService);
-  //_router = inject(Router);
-
   @ViewChild('LoginForm') form: NgForm;
 
   constructor(private _router : Router,private _authService : AuthService) {
@@ -33,6 +30,9 @@ export class LoginComponent {
     var succeeded : boolean;
 
     await this._authService.login(userVM).then((response) => succeeded = response);
+    
+    console.log(succeeded);
+    
 
     succeeded ? this._router.navigate([""]) : 
                         this.form.form.patchValue({

@@ -23,7 +23,6 @@ export class SignupComponent {
                                Email : userSignUpForm.value["Email"],
                                Password : userSignUpForm.value["Password"]}
 
-    this.form.reset();
     this._httpClient.post(`${this.baseUrl}/SignUp`,userVM).subscribe({
         next(value) {
         },
@@ -31,8 +30,11 @@ export class SignupComponent {
 
           console.log(err);
           this.errors = parseErrors(err);
-          this.test = "asd";
-          console.log(this.errors);
+          this.form.form.patchValue({
+            UserName: userVM.UserName,
+            Email: userVM.Email,
+            Password: userVM.Password,
+            }) 
         },
       }
     )

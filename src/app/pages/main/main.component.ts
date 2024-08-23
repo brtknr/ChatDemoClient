@@ -1,5 +1,5 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component } from '@angular/core';
 import { SignalrService } from 'src/app/services/signalr.service';
 
 @Component({
@@ -24,11 +24,7 @@ export class MainComponent {
     }));
 
     this._signalrService.clientList().subscribe((data:string[]) => {
-      //this.clientlist = [];
-      this.clientlist = data;
-      // data.forEach(element => {
-      //   this.clientlist.push(element);
-      // });
+      this.clientlist = data;      
     })
     
     this._signalrService.userJoined().subscribe((data:string) => {
@@ -43,6 +39,17 @@ export class MainComponent {
   sendMessage(inputElement:HTMLInputElement,connIdInput:HTMLInputElement){
     // console.log(inputElement.value);
     this._signalrService.sendMessageAsync(inputElement.value,connIdInput.value);
+  }
+
+  testAuth(){
+    this._http.get("https://localhost:7155/User/AuthTest").subscribe({
+      next(value) {
+        console.log(value);
+      },
+      error(err) {
+        console.log(err);
+      },
+    });
   }
 
 }

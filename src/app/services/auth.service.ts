@@ -1,10 +1,10 @@
 import { HttpClient } from '@angular/common/http';
-import { TmplAstRecursiveVisitor } from '@angular/compiler';
 import { inject, Injectable } from '@angular/core';
-import { NgForm } from '@angular/forms';
 import { UserSignup } from '../models/UserSignup';
 import { appSettings } from '../consts';
-import { firstValueFrom, Observable, of } from 'rxjs';
+import { firstValueFrom } from 'rxjs';
+import { authResponseModel } from '../models/authResponseModel';
+import { JwtHelperService } from '@auth0/angular-jwt';
 
 @Injectable({
   providedIn: 'root'
@@ -13,25 +13,41 @@ export class AuthService {
 
   private _httpClient : HttpClient;
 
-  constructor() {
+  constructor(private jwtHelper:JwtHelperService) {
     this._httpClient  = inject(HttpClient);
    }
 
-  private auth = true;
-
   authenticated(){
-    return this.auth;
+    const token = localStorage.getItem("token"); //this.jwtHelper.tokenGetter();
+  
+    if(token != 'undefined'){
+      try{
+        this.jwtHelper.decodeToken(token);
+        var isTokenExpired = this.jwtHelper.isTokenExpired(token);
+        console.log("is token expired : ",isTokenExpired);
+      }
+      catch(err){
+        console.log("token error : ",err);
+        return false;
+      }
+    }  
+    return !isTokenExpired;
   }
 
   async login(userVM:UserSignup) {
 
-    var auth2 = false;
+    let succeeded = false;
 
     await firstValueFrom(this._httpClient.post(`${appSettings.USER_BASE_URL}/Login`,userVM))
-                .then((value) => auth2 = true)
-                .catch((err) =>console.log(err));
+                .then((response:authResponseModel) =>
+                   {
+                    localStorage.setItem("token",response.token);
+                    succeeded = true;
+                  })
+                .catch((err) =>console.log(err))
 
-    return auth2;            
+
+    return succeeded;            
   }
 
 }
