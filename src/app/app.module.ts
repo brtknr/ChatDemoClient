@@ -13,6 +13,12 @@ import { AuthService } from './services/auth.service';
 import { LoginComponent } from './pages/login/login.component';
 import { AuthInterceptor } from './interceptors/authInterceptor';
 import { JWT_OPTIONS, JwtHelperService, JwtModule } from '@auth0/angular-jwt';
+import { NgxSpinnerModule } from 'ngx-spinner';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import {MatSidenavModule} from '@angular/material/sidenav';
+import {MatListModule} from '@angular/material/list';
+import { MatButtonModule } from "@angular/material/button";
 
 @NgModule({
   declarations: [
@@ -26,6 +32,10 @@ import { JWT_OPTIONS, JwtHelperService, JwtModule } from '@auth0/angular-jwt';
     AppRoutingModule,
     ComponentsModule,
     HttpClientModule,
+    BrowserModule,
+    BrowserAnimationsModule,
+    NgxSpinnerModule,
+    MatSidenavModule,MatListModule,MatButtonModule,
     FormsModule,
     JwtModule.forRoot({
       config:{
@@ -38,6 +48,7 @@ import { JWT_OPTIONS, JwtHelperService, JwtModule } from '@auth0/angular-jwt';
         ] 
       }
     }),
+    NgbModule,
   ],
   providers: [
     SignalrService,

@@ -1,10 +1,11 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, inject, ViewChild } from '@angular/core';
+import { Component, inject, OnInit, ViewChild } from '@angular/core';
 import { UserSignup } from 'src/app/models/UserSignup';
 import { appSettings } from 'src/app/consts';
 import { NgForm } from '@angular/forms';
 import { AuthService } from 'src/app/services/auth.service';
 import { Router } from '@angular/router';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'app-login',
@@ -12,12 +13,15 @@ import { Router } from '@angular/router';
   styleUrls: ['./login.component.css']
 })
 
-export class LoginComponent {
+export class LoginComponent implements OnInit{
 
   @ViewChild('LoginForm') form: NgForm;
 
-  constructor(private _router : Router,private _authService : AuthService) {
+  constructor(private _router : Router,private _authService : AuthService,private ngxSpinner : NgxSpinnerService) {
 
+  }
+
+  ngOnInit(): void {
   }
 
 
@@ -27,19 +31,17 @@ export class LoginComponent {
       Email : userLoginForm.value["Email"],
       Password : userLoginForm.value["Password"]}
 
-    var succeeded : boolean;
+    this.ngxSpinner.show();  
 
-    await this._authService.login(userVM).then((response) => succeeded = response);
-    
-    console.log(succeeded);
+    await this._authService.login(userVM).then((response) => console.log(response)).finally(() => this.ngxSpinner.hide());
     
 
-    succeeded ? this._router.navigate([""]) : 
-                        this.form.form.patchValue({
-                        UserName: userVM.UserName,
-                        Email: userVM.Email,
-                        Password: userVM.Password,
-                        }) 
+    this._authService.authenticated() ? this._router.navigate([""]) : 
+                                          this.form.form.patchValue({
+                                          UserName: userVM.UserName,
+                                          Email: userVM.Email,
+                                          Password: userVM.Password,
+                                        }) 
   }
 
 }

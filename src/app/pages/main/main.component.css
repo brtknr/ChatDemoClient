@@ -1,0 +1,19 @@
+.example-container {
+    width: auto;
+    height: 100%;
+    margin: 60px;
+    border: 1px solid #555;
+    /* The background property is added to clearly distinguish the borders between drawer and main
+       content */
+    background: #eee;
+  }
+
+  .chat-group-item{
+   text-decoration: none;
+  }
+
+
+  .chat-group-item :hover{
+      cursor: pointer;
+      background-color: bisque;
+  }

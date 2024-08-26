@@ -1,4 +1,4 @@
-<div style="background-color: darkseagreen;">
+<!-- <div style="background-color: darkseagreen;">
     <input type="text" #txtInput>
     <hr>
     <input type="text" #connIdInput>
@@ -15,4 +15,45 @@
     <p style="background-color: lightgreen;" *ngIf="userJoined">{{userJoined}} katıldı.</p>
     <p style="background-color: darkred;" *ngIf="userLeft">{{userLeft}} ayrıldı.</p>
     <button (click)="testAuth()">test auth</button>
-</div>
+</div> -->
+
+<mat-drawer-container class="example-container" hasBackdrop=true>
+    <mat-drawer #drawer mode="side">
+        
+        <mat-list *ngIf="chatGroups.length > 0">
+              
+        <a href="#" class="chat-group-item">  
+          <mat-list-item *ngFor="let group of chatGroups; index as i" (click)="onChatGroupClick(group.id)">
+
+                <img matListItemAvatar src={{group.avatarUrl}} alt="...">
+                <h3 matListItemTitle>{{group.title}}</h3>
+                <p matListItemLine>
+                  <span style="opacity:0.8;">{{group.lastMessage}}</span>
+                  <span style="opacity: 0.4;"> -- {{group.memberCount}} members</span>
+                </p>
+          
+          </mat-list-item>
+        </a>
+      
+        </mat-list>
+
+    </mat-drawer>
+    <mat-drawer-content>
+
+      <div>  
+        <button style="display:block;" mat-flat-button (click)="drawer.toggle()">Chats►</button>
+        <div class="group-info" style="display: flex;background-color: black;" *ngIf="drawerContent != null">
+          <img style="border-radius: 5px;" height="50" width="50" src="{{drawerContent?.avatarUrl}}">
+          <h3 style="margin-left: 10px;">{{drawerContent?.title}}</h3>
+        </div>
+      </div>
+
+
+      <mat-divider style="--mat-divider-width: 18px;"></mat-divider>
+      <div style="margin-left: 50%;" *ngIf="drawerContent != null">
+
+
+      </div>
+    </mat-drawer-content>
+
+</mat-drawer-container>
