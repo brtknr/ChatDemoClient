@@ -19,6 +19,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import {MatSidenavModule} from '@angular/material/sidenav';
 import {MatListModule} from '@angular/material/list';
 import { MatButtonModule } from "@angular/material/button";
+import { MatIconModule  } from "@angular/material/icon";
 
 @NgModule({
   declarations: [
@@ -35,7 +36,7 @@ import { MatButtonModule } from "@angular/material/button";
     BrowserModule,
     BrowserAnimationsModule,
     NgxSpinnerModule,
-    MatSidenavModule,MatListModule,MatButtonModule,
+    MatSidenavModule,MatListModule,MatButtonModule,MatIconModule,
     FormsModule,
     JwtModule.forRoot({
       config:{

@@ -1,7 +1,7 @@
 export interface authResponseModel{
     message :string
-    isauthenticated :boolean
-    username :string
+    isAuthenticated :boolean
+    userName :string
     email :string
     token :string
 }

@@ -1,27 +1,19 @@
-<!-- <div style="background-color: darkseagreen;">
-    <input type="text" #txtInput>
-    <hr>
-    <input type="text" #connIdInput>
-    <button (click)="sendMessage(txtInput,connIdInput)">send message</button>
-    <p>{{ inputText }}</p>
-    <hr>
-    <div style="background-color: blueviolet;">
-        <ul>
-            <h4 style="text-decoration: underline;">Kullanıcı Listesi</h4>
-            <li *ngFor="let el of clientlist">{{ el }}</li>
-        </ul>
-    </div>
-    <hr>
-    <p style="background-color: lightgreen;" *ngIf="userJoined">{{userJoined}} katıldı.</p>
-    <p style="background-color: darkred;" *ngIf="userLeft">{{userLeft}} ayrıldı.</p>
-    <button (click)="testAuth()">test auth</button>
-</div> -->
-
+<div class="user-info">
+  <span style="margin-right: 8px;">{{username}}</span>
+  <mat-icon aria-hidden="false" class="logout-icon-display" aria-label="logout" fontIcon="logout" (click)="logout()" style="margin-right:10px;"></mat-icon>
+</div>
 <mat-drawer-container class="example-container" hasBackdrop=true>
+
     <mat-drawer #drawer mode="side">
-        
-        <mat-list *ngIf="chatGroups.length > 0">
-              
+      
+        <div class="nav-icons" style="display:flex;align-items:flex-end;justify-content: flex-start;">
+          <mat-icon aria-hidden="false" class="icon-display" aria-label="add-group" fontIcon="my_library_add" (click)="createGroup()"></mat-icon>
+          
+          <mat-icon aria-hidden="false" class="icon-display" aria-label="stories" fontIcon="blur_circular" (click)="getStories()"></mat-icon>
+        </div>  
+
+        <mat-divider></mat-divider>
+        <mat-list *ngIf="chatGroups.length > 0">  
         <a href="#" class="chat-group-item">  
           <mat-list-item *ngFor="let group of chatGroups; index as i" (click)="onChatGroupClick(group.id)">
 
@@ -33,26 +25,26 @@
                 </p>
           
           </mat-list-item>
-        </a>
-      
+        </a>      
         </mat-list>
-
     </mat-drawer>
-    <mat-drawer-content>
 
+    <mat-drawer-content>
       <div>  
-        <button style="display:block;" mat-flat-button (click)="drawer.toggle()">Chats►</button>
+        <button style="display:block;" mat-flat-button (click)="drawer.toggle()"> Rooms ►</button>
         <div class="group-info" style="display: flex;background-color: black;" *ngIf="drawerContent != null">
           <img style="border-radius: 5px;" height="50" width="50" src="{{drawerContent?.avatarUrl}}">
           <h3 style="margin-left: 10px;">{{drawerContent?.title}}</h3>
         </div>
       </div>
 
-
       <mat-divider style="--mat-divider-width: 18px;"></mat-divider>
-      <div style="margin-left: 50%;" *ngIf="drawerContent != null">
-
-
+      <div class="messages-wrapper" *ngIf="drawerContent != null">
+          <div class="messages-container col-md-8">
+              <ul>
+                <li *ngFor="let msg of messagesInGroup"> {{msg.text}} </li>
+              </ul>
+          </div>
       </div>
     </mat-drawer-content>
 

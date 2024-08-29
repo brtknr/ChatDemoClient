@@ -19,10 +19,10 @@ export class AuthService {
 
   authenticated(){
     const token = localStorage.getItem("token"); //this.jwtHelper.tokenGetter();
-  
+    
     if(token != 'undefined'){
       try{
-        this.jwtHelper.decodeToken(token);
+        console.log(this.jwtHelper.decodeToken(token));
         var isTokenExpired = this.jwtHelper.isTokenExpired(token);
         console.log("is token expired : ",isTokenExpired);
       }
@@ -41,6 +41,7 @@ export class AuthService {
     await firstValueFrom(this._httpClient.post(`${appSettings.USER_BASE_URL}/Login`,userVM))
                 .then((response:authResponseModel) =>
                    {
+                    localStorage.setItem("username",response.userName);
                     localStorage.setItem("token",response.token);
                     succeeded = true;
                   })
@@ -48,6 +49,21 @@ export class AuthService {
 
 
     return succeeded;            
+  }
+
+  async logout(){
+    
+    let succeeded = false;
+    
+    await firstValueFrom(this._httpClient.post(`${appSettings.USER_BASE_URL}/Logout`,""))
+                  .then((response:any) => {
+                    localStorage.removeItem("token");
+                    localStorage.removeItem("username");
+                    succeeded = true;
+                  })
+                  .catch((err) => console.log(err))
+
+    return succeeded;                
   }
 
 }

@@ -2,6 +2,7 @@
     width: auto;
     height: 100%;
     margin: 60px;
+    margin-top: 20px;
     border: 1px solid #555;
     /* The background property is added to clearly distinguish the borders between drawer and main
        content */
@@ -17,3 +18,51 @@
       cursor: pointer;
       background-color: bisque;
   }
+
+  mat-icon:hover{
+    cursor: pointer;
+  }
+
+  .icon-display {
+    transform: scale(1.1);
+    margin-left: 10px;
+    margin-top: 5px;
+ }
+
+ .icon-display:hover{
+  color: lightgreen;
+} 
+
+  .logout-icon-display{
+    transform: scale(1.4);
+  }
+
+  .logout-icon-display:hover{
+    color: red;
+  }
+
+ 
+
+ mat-drawer-container mat-drawer{
+    width: 400px;
+}
+
+.user-info{
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 4%;
+    padding-top: 10px;
+}
+
+.messages-wrapper{
+  width: 100%;
+  height: 60%;
+  display: flex;
+  justify-content: center;
+}
+
+.messages-container{
+  background-color: red;
+  border: 1px solid black;
+  height: 100%;
+}

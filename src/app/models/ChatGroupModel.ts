@@ -5,7 +5,7 @@ export interface ChatGroupModel{
     avatarUrl:string
     members:string[]
     groupAdmin:string
-    messages:string[]
     seen:boolean
     memberCount:number
+    createdDate?:string
 }

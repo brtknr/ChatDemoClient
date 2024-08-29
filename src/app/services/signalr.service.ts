@@ -15,8 +15,10 @@ export class SignalrService {
                               .build();
     
     this.hubConnection.start()
-      .then(() => console.log("connection started . id : " + this.hubConnection.connectionId))
+      .then(() => this.hubConnection.invoke("matchConnIdAndUser",this.hubConnection.connectionId,localStorage.getItem("username")))
       .catch(err => console.log('error while starting connection ' + err));
+
+      
   }
 
   public dataListener = () => {
@@ -24,6 +26,14 @@ export class SignalrService {
       this.hubConnection.on('RecieveMessage', (data:string) => {
           observer.next(data);
           });
+    })
+  }
+
+  public GroupList = () => {
+    return new Observable((observer) => {
+      this.hubConnection.on('RecieveGroups',(data:[]) => {
+        observer.next(data);
+      })
     })
   }
 
@@ -51,8 +61,21 @@ export class SignalrService {
     }) 
   }
 
+  public messagesByGroupId = () => {
+    return new Observable((observer) => {
+      this.hubConnection.on('RecieveMessagesByGroupId',(data:[]) => 
+        {
+          observer.next(data);
+        })
+    })
+  }
+
   async sendMessageAsync(msg,targetConnectionId){
     await this.hubConnection.invoke("ClientToClientSendMessage",msg,targetConnectionId);
+  }
+
+  async invokeGetMessagesByGroupId(groupId:number,username:string){
+    await this.hubConnection.invoke("GetMessagesByGroupId",groupId,username);
   }
 
 }

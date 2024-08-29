@@ -1,9 +1,14 @@
 import { HttpClient } from '@angular/common/http';
-import { Component, ElementRef, ViewChild } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { SignalrService } from 'src/app/services/signalr.service';
 import { ChatGroupModel } from 'src/app/models/ChatGroupModel';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { MatListItem } from '@angular/material/list';
+import { AuthService } from 'src/app/services/auth.service';
+import { Router } from '@angular/router';
+import { AvatarUrls } from 'src/app/consts';
+import { GroupResponseModel } from 'src/app/models/groupResponseModel';
+import { MessageResponseModel } from 'src/app/models/messageResponseModel';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-main',
@@ -11,56 +16,93 @@ import { MatListItem } from '@angular/material/list';
   styleUrls: ['./main.component.css']
 })
 export class MainComponent {
-  inputText:any = "";
   userJoined:string;
   userLeft:string;
+  username = localStorage.getItem("username");
 
   clientlist:string[] = [];
-
-  chatGroups:ChatGroupModel[] = [
-     {id:1,title:"Group A",avatarUrl:"./assets/GroupAvatars/droplet.jpeg",groupAdmin:"",lastMessage:"Saaaa tesdst message111",messages:[],members:[],seen:false,memberCount:11},
-     {id:2,title:"Group B",avatarUrl:"./assets/GroupAvatars/football.jpg",groupAdmin:"",lastMessage:"Groupppp BBBB",messages:[],members:[],seen:true,memberCount:3},
-     {id:3,title:"Group C",avatarUrl:"./assets/GroupAvatars/green.jpg",groupAdmin:"",lastMessage:"sdf message from sddsff",messages:[],members:[],seen:true,memberCount:8},
-     {id:4,title:"Group D",avatarUrl:"./assets/GroupAvatars/droplet.jpeg",groupAdmin:"",lastMessage:"dsf mesdfssage from asdasd",messages:[],members:[],seen:true,memberCount:8},
-     {id:5,title:"Group E",avatarUrl:"./assets/GroupAvatars/football.jpg",groupAdmin:"",lastMessage:"sdf message from dsasdasd",messages:[],members:[],seen:true,memberCount:8},
-     {id:6,title:"Group F",avatarUrl:"./assets/GroupAvatars/green.jpg",groupAdmin:"",lastMessage:"sdf message ssdfdsdfrom fasdasd",messages:[],members:[],seen:true,memberCount:8},
-     {id:7,title:"Group G",avatarUrl:"./assets/GroupAvatars/football.jpg",groupAdmin:"",lastMessage:"Hiiiiiiiiiii message from asdasd",messages:[],members:[],seen:true,memberCount:8},
-  ];
-
+  chatGroups:ChatGroupModel[] = [];
   drawerContent:ChatGroupModel;
+  messagesInGroup:MessageResponseModel[] = [];
+  
+  messagesSubscription : Subscription;
 
-  constructor(private _signalrService : SignalrService,private _http:HttpClient,private ngxSpinner:NgxSpinnerService) {}
+  constructor(private _signalrService : SignalrService,private _http:HttpClient,private ngxSpinner:NgxSpinnerService,private _authService:AuthService,private _router : Router) {}
 
   async ngOnInit(){
 
     this._signalrService.startConnection();
-    this._signalrService.dataListener().subscribe((data=>{
-      this.inputText = data;
-    }));
-
-    this._signalrService.clientList().subscribe((data:string[]) => {
-      this.clientlist = data;      
-    })
     
-    this._signalrService.userJoined().subscribe((data:string) => {
-      this.userJoined = data;
-    });
+    this._signalrService.GroupList().subscribe((data:GroupResponseModel[]) => {
+      this.chatGroups = [];
+      console.log(data);
+      data.forEach(element => {
+        this.chatGroups.push(
+            {
+              id : element.groupId,
+              title : element.title,
+              avatarUrl : element.avatarUrl,
+              groupAdmin : element.adminUsername,
+              lastMessage : element.lastMessage ,
+              members : element.members ?? [],
+              seen : false,
+              memberCount : element.members?.length,
+              createdDate : element.createdDate            
+            }
+        )
+      });
 
-    this._signalrService.userLeft().subscribe((data:string) => {
-      this.userLeft = data;
-    });
+    })
+      
   }
 
-  sendMessage(inputElement:HTMLInputElement,connIdInput:HTMLInputElement){
-    // console.log(inputElement.value);
-    this._signalrService.sendMessageAsync(inputElement.value,connIdInput.value);
-  }
+  async onChatGroupClick(groupId:number){
 
-  onChatGroupClick(groupId:number){
-  
     this.chatGroups.forEach(element => {
-        if(element.id == groupId) this.drawerContent = element;
+      if(element.id == groupId) this.drawerContent = element;
     });
+
+    this._signalrService.invokeGetMessagesByGroupId(groupId,localStorage.getItem("username"));
+
+    this.messagesInGroup = []; // eski mesajlari temizle
+    this.messagesSubscription?.unsubscribe(); // eski baglantiyi bitir.
+
+    this.messagesSubscription = this._signalrService.messagesByGroupId().subscribe((messages : MessageResponseModel[]) =>
+                            {
+                              console.log(messages);
+                              
+                            messages.forEach(msg => {
+                              this.messagesInGroup.push(
+                              {
+                                  id : msg.id,
+                                  senderUsername : msg.senderUsername,
+                                  senderId : "",
+                                  text : msg.text,
+                                  date : msg.date
+                                })
+                            });
+                          })
+     
+  }
+
+  createGroup(){
+    alert("icon clicked");
+  }
+
+  logout(){
+
+    this.ngxSpinner.show();
+
+    this._authService.logout().then((response) => 
+      {
+        response == true ? this._router.navigate(['/Login']) : console.log("user is not logged out"); 
+      })
+      .finally(() => this.ngxSpinner.hide());
+      
+  }
+
+  getStories(){
+    console.log("stories!!!");
   }
 
   testAuth(){
