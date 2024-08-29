@@ -58,11 +58,18 @@ export class MainComponent {
 
   async onChatGroupClick(groupId:number){
 
+    let oldGroupId:string = "0"; // eski group id yok . ilk tiklama
+
+    if(localStorage.getItem("groupid") != 'undefined') oldGroupId = localStorage.getItem("groupid");
+
+    localStorage.setItem("groupid",groupId.toString());
+
+
     this.chatGroups.forEach(element => {
       if(element.id == groupId) this.drawerContent = element;
     });
 
-    this._signalrService.invokeGetMessagesByGroupId(groupId,localStorage.getItem("username"));
+    this._signalrService.invokeGetMessagesByGroupId(oldGroupId,groupId,localStorage.getItem("username"));
 
     this.messagesInGroup = []; // eski mesajlari temizle
     this.messagesSubscription?.unsubscribe(); // eski baglantiyi bitir.
@@ -70,7 +77,7 @@ export class MainComponent {
     this.messagesSubscription = this._signalrService.messagesByGroupId().subscribe((messages : MessageResponseModel[]) =>
                             {
                               console.log(messages);
-                              
+
                             messages.forEach(msg => {
                               this.messagesInGroup.push(
                               {
@@ -100,6 +107,11 @@ export class MainComponent {
       .finally(() => this.ngxSpinner.hide());
       
   }
+
+  sendMessageToGroup(htmlElementInput:HTMLInputElement,groupId){
+      this._signalrService.sendMessageToGroupAsync(htmlElementInput.value,groupId.toString());
+  }
+
 
   getStories(){
     console.log("stories!!!");

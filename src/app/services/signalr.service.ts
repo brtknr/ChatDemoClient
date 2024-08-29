@@ -16,9 +16,9 @@ export class SignalrService {
     
     this.hubConnection.start()
       .then(() => this.hubConnection.invoke("matchConnIdAndUser",this.hubConnection.connectionId,localStorage.getItem("username")))
-      .catch(err => console.log('error while starting connection ' + err));
-
-      
+      .catch(err => console.log('error while starting connection ' + err))
+      .finally(() => console.log(this.hubConnection.connectionId))
+  
   }
 
   public dataListener = () => {
@@ -70,12 +70,12 @@ export class SignalrService {
     })
   }
 
-  async sendMessageAsync(msg,targetConnectionId){
-    await this.hubConnection.invoke("ClientToClientSendMessage",msg,targetConnectionId);
+  async sendMessageToGroupAsync(msg,groupId:string){
+    await this.hubConnection.invoke("SendMessageToGroup",msg,groupId);
   }
 
-  async invokeGetMessagesByGroupId(groupId:number,username:string){
-    await this.hubConnection.invoke("GetMessagesByGroupId",groupId,username);
+  async invokeGetMessagesByGroupId(oldGroupId:string,groupId:number,username:string){
+    await this.hubConnection.invoke("GetMessagesByGroupId",oldGroupId,groupId,username);
   }
 
 }

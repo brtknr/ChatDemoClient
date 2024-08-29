@@ -46,6 +46,9 @@
               </ul>
           </div>
       </div>
+
+      <input type="text" #inputText>
+      <button type="submit" (click)="sendMessageToGroup(inputText,drawerContent.id)">Gönder</button>
     </mat-drawer-content>
 
 </mat-drawer-container>
