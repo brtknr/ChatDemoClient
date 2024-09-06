@@ -65,6 +65,7 @@ export class SignalrService {
     return new Observable((observer) => {
       this.hubConnection.on('RecieveMessagesByGroupId',(data:[]) => 
         {
+          console.log('signalr service messages: ',data);
           observer.next(data);
         })
     })

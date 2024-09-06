@@ -76,18 +76,17 @@ export class MainComponent {
 
     this.messagesSubscription = this._signalrService.messagesByGroupId().subscribe((messages : MessageResponseModel[]) =>
                             {
-                              console.log(messages);
-
-                            messages.forEach(msg => {
-                              this.messagesInGroup.push(
-                              {
-                                  id : msg.id,
-                                  senderUsername : msg.senderUsername,
-                                  senderId : "",
-                                  text : msg.text,
-                                  date : msg.date
-                                })
-                            });
+                                this.messagesInGroup = [];                                
+                                messages.forEach(msg => {
+                                  this.messagesInGroup.push(
+                                  {
+                                      id : msg.id,
+                                      senderUsername : msg.senderUsername,
+                                      senderId : "",
+                                      text : msg.text,
+                                      date : msg.date
+                                    })
+                                });
                           })
      
   }
